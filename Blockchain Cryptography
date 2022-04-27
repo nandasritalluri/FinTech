@@ -1,0 +1,38 @@
+from sympy import mod_inverse
+import hashlib
+import os
+from google.colab import files
+
+#Part 1:
+p = 112481050639317229656723018120659623829736571015511322021617837187076258724819
+q = 89185111938335771293328323333111422985697062149139368049232365065924632677343
+n = p*q
+e = 65537
+
+d = mod_inverse(e, (p-1)*(q-1))
+
+print("the private key is %s" %d)
+
+#Part 2:
+message = "Running late. Wait for me."
+m = int.from_bytes(message.encode('utf-8'), "big")
+print(m)
+c = pow(m, e, n)
+print(c)
+
+#Part 3:
+c = 9029727923340384868426518880554167882611943065703927838617521515742066859974885947494642963883568408240430125599636824996577080116022919050269017033777667
+m3 = pow(c,d,n)
+m3_bytes = m3.to_bytes((m3.bit_length() + 7) // 8, 'big')
+message3 = m3_bytes.decode()
+print(message3)
+
+#Part 4:
+m_hash = hashlib.sha256(b"Congrats! You just decrypted your first message!").hexdigest()
+m3 = int.from_bytes(m_hash.encode("utf-8"), "big")
+S = pow(m3, d, n)
+print(S)
+
+#Part 5:
+M4 = pow(S, e, n)
+print("The Verified Signature message is %s. The Original Signature message was %s" % (M4,m3))
