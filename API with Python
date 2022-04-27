@@ -1,0 +1,32 @@
+from requests import Request, Session
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+import json
+import pandas as pd
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+headers = {'Accepts':'application/json','X-CMC_PRO_API_KEY':'6ec3235f-a9b1-47fd-9d5d-0b22a0f3c0a5',}
+url ='https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
+parameters = {'start':'1','limit':'5000','convert':'USD'}
+session = Session()
+session.headers.update(headers)
+try:
+  response = session.get(url, params=parameters)
+  data_jason = json.loads(response.text)
+except (ConnectionError, Timeout, TooManyRedirects) as e:
+  print(e)
+df = pd.DataFrame(data_jason["data"])
+print(df)
+print()
+
+url2 = 'https://pro-api.coinmarketcap.com/v1/fiat/map'
+parameters2 = {}
+session2 = Session()
+session2.headers.update(headers)
+try:
+  response2 = session2.get(url2, params=parameters2)
+  data_jason2 = json.loads(response2.text)
+except (ConnectionError, Timeout, TooManyRedirects) as e2:
+  print(e2)
+df2 = pd.DataFrame(data_jason2["data"])
+#print(df2)
