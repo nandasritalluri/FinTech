@@ -1,0 +1,148 @@
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn import linear_model
+from sklearn.neural_network import MLPRegressor
+
+# read the data set and store in a variable called df
+
+df = pd.read_csv("Stock Return Data.csv")
+
+# create a new variable called "Mkt_rf_lead" which is the next day market excess return
+
+df = df.sort_values("Date", ascending=True)
+df["Mkt_rf_lead"] = df["Mkt_rf"].shift(-1)
+
+# drop the last observation with NaN
+
+df.dropna(how = "any", inplace=True)
+
+##In Class Code
+y = np.asarray(df["Mkt_rf_lead"])
+x = np.asarray(df.drop(columns = ["Mkt_rf_lead", "Mkt_rf", "Date"]))
+
+lr = LinearRegression()
+results = lr.fit(x, y)
+#results.coef_
+
+#Compute MSE of Regression
+y_pred = np.asarray(lr.predict(x))
+
+diff = np.subtract(y, y_pred)
+diff_sq = np.square(diff)
+MSE = np.mean(diff_sq)
+RMSE = np.sqrt(MSE)
+
+
+## alpha = 1 -- Lasso
+clf = linear_model.Lasso(alpha=1)
+clf.fit(x,y)
+clf.predict(x)
+
+y_pred2 = np.asarray(clf.predict(x))
+
+diff = np.subtract(y, y_pred2)
+diff_sq = np.square(diff)
+MSE = np.mean(diff_sq)
+print(MSE)
+RMSE = np.sqrt(MSE)
+
+
+
+
+## alpha = 0.1 -- Lasso
+clf2 = linear_model.Lasso(alpha=0.1)
+clf2.fit(x,y)
+clf2.predict(x)
+
+y_pred3 = np.asarray(clf2.predict(x))
+
+diff = np.subtract(y, y_pred3)
+diff_sq = np.square(diff)
+MSE = np.mean(diff_sq)
+print(MSE)
+RMSE = np.sqrt(MSE)
+
+
+## alpha = 0.01 -- Lasso
+clf3 = linear_model.Lasso(alpha=0.01)
+clf3.fit(x,y)
+clf3.predict(x)
+
+y_pred4 = np.asarray(clf3.predict(x))
+
+diff = np.subtract(y, y_pred4)
+diff_sq = np.square(diff)
+MSE = np.mean(diff_sq)
+print(MSE)
+RMSE = np.sqrt(MSE)
+
+
+
+## alpha = 1 -- Ridge
+clf4 = linear_model.Ridge(alpha=1)
+clf4.fit(x,y)
+clf4.predict(x)
+
+y_pred5 = np.asarray(clf4.predict(x))
+
+diff = np.subtract(y, y_pred5)
+diff_sq = np.square(diff)
+MSE = np.mean(diff_sq)
+print(MSE)
+RMSE = np.sqrt(MSE)
+
+## alpha = 0.1 -- Ridge
+clf5 = linear_model.Ridge(alpha=0.1)
+clf5.fit(x,y)
+clf5.predict(x)
+
+y_pred6 = np.asarray(clf5.predict(x))
+
+diff = np.subtract(y, y_pred6)
+diff_sq = np.square(diff)
+MSE = np.mean(diff_sq)
+print(MSE)
+RMSE = np.sqrt(MSE)
+
+## alpha = 0.01 -- Ridge
+clf6 = linear_model.Ridge(alpha=0.01)
+clf6.fit(x,y)
+clf6.predict(x)
+
+y_pred7 = np.asarray(clf6.predict(x))
+
+diff = np.subtract(y, y_pred7)
+diff_sq = np.square(diff)
+MSE = np.mean(diff_sq)
+print(MSE)
+RMSE = np.sqrt(MSE)
+
+
+# Decision Trees and Random FOrest
+import sklearn.tree
+import matplotlib
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+
+# Decision Tree Model:
+dt = sklearn.tree.DecisionTreeRegressor(randomstate=42, min_samples_leaf=100)
+dt.fit(x, y)
+y_tree_pred = dt.predict(x)
+dt_mse = mean_squared_error(y, y_tree_pred)
+dt_mse
+
+# Random Forest Model
+
+rf = RandomForestRegressor(random_state = 42, n_estimators = 100, min_samples_leaf = 100, max_features = "sqrt")
+rf.fit(x, y_ravel())
+y_rf_pred = rf.predict(x)
+rf_mse = mean_squared_error(y, y_rf_pred)
+rf_mse
+
+
+# Deep Learning
+dl  = MLPRegressor(random_state=42, solver="sgd", max_iter=10000, activation="relu", hidden_layer_sizes=(20, 10, 3))
+dl.fit(x, y)
+pred_x = dl.predict(x)
+MSE = mean_squared_error(y, pred_x, squared=True)
