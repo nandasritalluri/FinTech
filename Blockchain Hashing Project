@@ -1,0 +1,34 @@
+# FinTech
+
+import hashlib
+from sympy import mod_inverse
+import os
+from google.colab import files
+
+headerhash = hashlib.sha256(b"Cesare sends one bitcoin to Shimon").hexdigest()
+lastblockhash = "85738f8f9a7f1b04b5329c590ebcb9e425925c6d0984089c43a022de4f19c281"
+timestamp = "2018-01-07 21:05:34"
+bits = "3"
+nonce = 0
+nonceStr = str(nonce)
+blockheader = headerhash + " " + lastblockhash + " " + timestamp + " " + bits + " " + nonceStr
+
+print(blockheader)
+blockheaderHash = hashlib.sha256(blockheader.encode()).hexdigest()
+print(blockheaderHash)
+
+x = 0
+nonce = 0
+while x <= 999999:
+  nonce = x
+  nonceStr = str(nonce)
+  blockheader = headerhash + " " + lastblockhash + " " + timestamp + " " + bits + " " + nonceStr
+  blockheaderHash = hashlib.sha256(blockheader.encode()).hexdigest()
+  if blockheaderHash[0:4] == "0000":
+    print(nonce)
+    print(blockheaderHash)
+    break
+  else:
+    x = x + 1
+    
+    
