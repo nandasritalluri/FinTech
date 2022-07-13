@@ -1,0 +1,48 @@
+import pandas as pd
+import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import mean_squared_error
+import math
+from matplotlib import pyplot
+import os
+import statsmodels.api as sm
+
+df = pd.read_csv("Stock Return Data.csv")
+df.columns
+
+df.head()
+
+df["Mkt_rf_lead"] = df["Mkt_rf"].shift(-1)
+df["Mkt_rf_lead"]
+
+df.dropna(how="any", inplace=True)
+
+X = np.asarray(df.drop(["Date","Mkt_rf", "Mkt_rf_lead"], axis=1))
+y = np.asarray(df["Mkt_rf_lead"])
+
+# Create a linear regression object
+reg = linear_model.LinearRegression()
+
+# Train the model using training sets
+reg.fit(X,y)
+
+# Make predictions using the testing set
+pred_x = reg.predict(X)
+
+# Calculate the mean absolute error
+pred_x = reg.predict(X)
+
+# Deep Learning
+
+X = np.asarray(df.drop(["Date", "Mkt_rf", "Mkt_rf_lead"], axis=1))
+y = np.asarray(df["Mkt_rf_lead"])
+
+neuro = MLPRegressor(random_state=42, solver="sgd", max_iter=10000, activation="relu", hidden_layer_sizes=(20,10,3))
+neuro.fit(X,y)
+pred_x = neuro.predict(X)
+MSE = mean_squared_error(y, pred_x, squared=True)
+RMSE = mean_squared_error(y, pred_x, squared=False)
+print(MSE)
+print(RMSE)
